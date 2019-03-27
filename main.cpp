@@ -4,29 +4,37 @@ using namespace cv;
 using namespace std;
 Mat  Image ;
 void DrawRectangle(Mat);
+Mat Mopology(Mat);
 int main()
 {
 
     vector<Vec4i> hierarchy;
     Mat mask,result,img_threshold;
 
-
-    Image = imread("C:/Users/ksrnd/Desktop/Light/20190326_002.png");
+    Image = imread("C:/Users/ksrnd/Desktop/Light/20190326_010.png");
 
     Mat img_hsv;
     cvtColor(Image,img_hsv,COLOR_RGB2HSV);
 
     inRange(img_hsv, Scalar(0, 0, 255), Scalar(179, 255, 255), mask);
 
-    dilate( mask, mask, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-    erode(mask, mask, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-
-    erode(mask, mask, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-    dilate( mask, mask, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    Mopology(mask);
     DrawRectangle(mask);
 
     waitKey();
 
+}
+
+Mat Mopology(Mat mask)
+{
+    //Expanding Function
+    //reducing Function
+    Mat element = getStructuringElement(MORPH_RECT,Size(3,3));
+    morphologyEx(mask,mask,MORPH_CLOSE,element,Point(-1,-1),20);
+    erode(mask, mask, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    erode(mask, mask, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+//    dilate( mask, mask, getStructuringElement(MORPH_ELLIPSE, Size(8, 8)) );
+    return mask;
 }
 void DrawRectangle(Mat mask)
 {
